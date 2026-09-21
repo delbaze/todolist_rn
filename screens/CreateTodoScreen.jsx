@@ -34,7 +34,7 @@ function CreateTodoScreen() {
   };
 
   const handleAddTodo = () => {
-    console.log("Ici on fera l'ajout de tâche");
+    console.log("Ici on fera l'ajout de tâche avec le texte : " + monTexte);
   }
   return (
     <View style={styles.container}>
@@ -46,9 +46,6 @@ function CreateTodoScreen() {
       <View style={styles.buttons}>
         <Button
           title="Annuler"
-          buttonStyle={{
-            borderColor: "blue",
-          }}
           type="clear"
           raised
           titleStyle={{ color: "blue" }}
