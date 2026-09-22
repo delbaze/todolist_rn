@@ -14,7 +14,7 @@ import storage from "../lib/storage";
 import Item from "../components/Item";
 import { useLoading } from "../contexts/LoaderContext";
 import Loader from "../components/Loader";
-function TodoListScreen({navigation}) {
+function TodoListScreen({ navigation }) {
   // const navigation = useNavigation();
   const { loading, setLoading } = useLoading();
 
@@ -28,8 +28,8 @@ function TodoListScreen({navigation}) {
     const todos = await storage.load({ key: "todoslist", defaultValue: [] });
     setTodos(todos);
     // setTimeout(() => {
-      // simulation d'un temps long pour récupérer le loader
-      setLoading(false);
+    // simulation d'un temps long pour récupérer le loader
+    setLoading(false);
     // }, 2000);
   };
 
@@ -55,6 +55,13 @@ function TodoListScreen({navigation}) {
       ],
     );
   };
+
+  const handleToggleTodo = async (id) => {
+    const updatedTodos = await storage.toggleTodo(id);
+    if (updatedTodos) {
+      setTodos(updatedTodos);
+    }
+  };
   useFocusEffect(
     useCallback(() => {
       fetchTodos();
@@ -62,8 +69,6 @@ function TodoListScreen({navigation}) {
   );
   return (
     <View style={styles.container}>
-   
-
       {loading ? (
         <Loader />
       ) : (
@@ -72,7 +77,11 @@ function TodoListScreen({navigation}) {
           style={{ alignSelf: "stretch" }}
           data={todos}
           renderItem={({ item }) => (
-            <Item todo={item} onDelete={handleDelete} />
+            <Item
+              todo={item}
+              onDelete={handleDelete}
+              onToggle={handleToggleTodo}
+            />
           )}
           onRefresh={fetchTodos}
           refreshing={loading}
@@ -80,7 +89,7 @@ function TodoListScreen({navigation}) {
           // ListFooterComponent={isFetchingNextPage ? <ActivityIndicator /> : null}
         />
       )}
-         <FAB
+      <FAB
         icon={{ name: "add", color: "white", type: "ionicon" }}
         color="orange"
         placement="right"

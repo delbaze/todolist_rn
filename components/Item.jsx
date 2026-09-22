@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { Icon, ListItem } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
-function Item({ todo, onDelete }) {
+function Item({ todo, onDelete, onToggle }) {
   // children (une clé créé par react si vous injectez un enfant dans le composant)
   const navigation = useNavigation();
   return (
@@ -16,13 +16,14 @@ function Item({ todo, onDelete }) {
         iconType="ionicon"
         checkedIcon="checkbox-outline"
         uncheckedIcon="square-outline"
-        checked={!todo.done}
+        checked={todo.done}
+        onPress={() => onToggle(todo.id)}
       />
       <ListItem.Content>
         <ListItem.Title
           style={{
             color: todo.done ? "gray" : "black",
-            textDecorationLine: !todo.done ? "line-through" : "none",
+            textDecorationLine: todo.done ? "line-through" : "none",
           }}
         >
           {todo.label}
@@ -34,7 +35,13 @@ function Item({ todo, onDelete }) {
           name="pencil"
           color="gray"
           disabled={todo.done}
-          onPress={() => navigation.navigate("EditTodo", { id: todo.id, toto: "tata", titi: "tutu" })}
+          onPress={() =>
+            navigation.navigate("EditTodo", {
+              id: todo.id,
+              toto: "tata",
+              titi: "tutu",
+            })
+          }
           // comme une route => params => route.params.id
         />
         <Icon
