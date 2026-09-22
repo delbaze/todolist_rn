@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { Input, Button } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
+import storage from "../lib/storage";
 function CreateTodoScreen() {
   const [monTexte, setMonTexte] = useState(
     "Ici il y aura la création des todos",
@@ -10,18 +11,18 @@ function CreateTodoScreen() {
 
   // ici je dis que monTexte peut être amené à changé, et que la vue devra s'actualisé si c'est le cas
 
-  useEffect(() => {
-    console.log("monTexte", monTexte);
-  }, [monTexte]); // QUAND MON TEXTE CHANGE, je tombe dans ce callback
+  // useEffect(() => {
+  //   console.log("monTexte", monTexte);
+  // }, [monTexte]); // QUAND MON TEXTE CHANGE, je tombe dans ce callback
 
-  useEffect(() => {
-    console.log("Le screen est chargé"); // quand le composant est chargé
+  // useEffect(() => {
+  //   console.log("Le screen est chargé"); // quand le composant est chargé
 
-    // cleanup // une fonction jouée quand le composant est déchargé
-    return () => {
-      console.log("Le screen se décharge");
-    };
-  }, []); // si le tableau de dépendance est vide, on rentre dans ce callback uniquement au chargement du composant
+  //   // cleanup // une fonction jouée quand le composant est déchargé
+  //   return () => {
+  //     console.log("Le screen se décharge");
+  //   };
+  // }, []); // si le tableau de dépendance est vide, on rentre dans ce callback uniquement au chargement du composant
 
   // useEffect(() => {
   //   console.log("Le screen est chargé OU le composant s'est re rendu");
@@ -30,11 +31,13 @@ function CreateTodoScreen() {
   const handleChangeMonTexte = (nouveauTexte) => {
     setMonTexte(nouveauTexte);
     // ici vu qu'on vient de mettre monTexte à jour, on s'attendrait à voir la dernière valeur dans "monTexte"
-    console.log("nouveauTexte", nouveauTexte);
   };
 
-  const handleAddTodo = () => {
-    console.log("Ici on fera l'ajout de tâche avec le texte : " + monTexte);
+  const handleAddTodo = async () => {
+    const newTodo = { id: Date.now().toString(), label: monTexte, done: false};
+    const todos = await storage.load({key: "todoslist", defaultValue: []})
+    const updatedTodos = [...todos, newTodo]; // vous réinjecterez les anciennes todos via "load" du storage
+    storage.save({key: "todoslist", data: updatedTodos});
   }
   return (
     <View style={styles.container}>
