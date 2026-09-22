@@ -5,21 +5,24 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import Reactotron from 'reactotron-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoaderProvider from './contexts/LoaderContext';
 
 Reactotron
   .setAsyncStorageHandler(AsyncStorage)
   .configure({ name: 'Todos App' })
   .useReactNative()
   .connect();
-  
+
 export default function App() {
 // console.log(Platform.Version)
   // syntaxe JSX
   
   return ( 
     <SafeAreaProvider>
-      <MainNavigator />
-      <StatusBar style="auto" />
+      <LoaderProvider>
+        <MainNavigator />
+        <StatusBar style="auto" />
+      </LoaderProvider>
     </SafeAreaProvider>
   );
 }

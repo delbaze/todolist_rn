@@ -1,13 +1,18 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View, Button } from "react-native";
 import { FAB } from "@rneui/themed";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import storage from "../lib/storage";
-
+import Item from "../components/Item";
+import { useLoading } from "../contexts/LoaderContext";
+// import { ContextLoader } from "../contexts/LoaderContext";
 function TodoListScreen() {
   const navigation = useNavigation();
+  // const contextLoader = useContext(ContextLoader)
+  const {loading, setLoading} = useLoading();
 
   const [todos, setTodos] = useState([]);
+  const [demo, setDemo] = useState("hello");
   const handleCreateTodo = () => {
     navigation.navigate("CreateTodo");
   };
@@ -54,10 +59,11 @@ function TodoListScreen() {
       <FlatList
         keyExtractor={(todo) => todo.id}
         data={todos}
+        // renderItem={({ item }) => <Item todo={item} />}
         renderItem={({ item }) => (
-          <View style={styles.item} key={item.id}>
-            <Text style={styles.title}>{item.label}</Text>
-          </View>
+          <Item todo={item} demo={demo}>
+            <Text>Je suis l'enfant de item</Text>
+          </Item>
         )}
       />
     </View>
@@ -70,15 +76,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-  },
-  item: {
-    backgroundColor: "#f9c2ff",
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 32,
   },
 });
 

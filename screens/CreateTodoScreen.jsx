@@ -34,11 +34,13 @@ function CreateTodoScreen() {
   };
 
   const handleAddTodo = async () => {
-    const newTodo = { id: Date.now().toString(), label: monTexte, done: false};
-    const todos = await storage.load({key: "todoslist", defaultValue: []})
+    const newTodo = { id: Date.now().toString(), label: monTexte, done: false };
+    const todos = await storage.load({ key: "todoslist", defaultValue: [] });
     const updatedTodos = [...todos, newTodo]; // vous réinjecterez les anciennes todos via "load" du storage
-    storage.save({key: "todoslist", data: updatedTodos});
-  }
+    storage.save({ key: "todoslist", data: updatedTodos });
+    console.log("test");
+    navigation.goBack();
+  };
   return (
     <View style={styles.container}>
       <Input
