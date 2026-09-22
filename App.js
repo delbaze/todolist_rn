@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Platform } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import MainNavigator from './navigators/MainNavigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -14,9 +14,6 @@ Reactotron
   .connect();
 
 export default function App() {
-// console.log(Platform.Version)
-  // syntaxe JSX
-  
   return ( 
     <SafeAreaProvider>
       <LoaderProvider>
