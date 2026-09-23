@@ -20,12 +20,6 @@ function EditTodoScreen({ route, navigation }) {
     }
     navigation.goBack();
   };
-  useEffect(() => {
-    if (id) {
-      loadTodo();
-    }
-  }, [id]);
-
   return (
     <TodoForm
       submitLabel="Éditer la tâche"

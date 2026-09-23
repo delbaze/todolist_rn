@@ -8,6 +8,7 @@ function TodoForm({
   submitLabel = "Ajouter la tâche",
   onSubmit,
 }) {
+  console.log('%c⧭', 'color: #00bf00', initialValue);
   const navigation = useNavigation();
   const [monTexte, setMonTexte] = useState(initialValue);
 
