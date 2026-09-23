@@ -4,25 +4,20 @@ import { useEffect, useState } from "react";
 import { View } from "react-native";
 import storage from "../lib/storage";
 import TodoForm from "../components/TodoForm";
+import { useTodosStore } from "../store/todoStore";
 
 function EditTodoScreen({ route, navigation }) {
   const { id } = route.params || {};
 
-  const [currentTodo, setCurrentTodo] = useState({ id: "", label: "" });
-  const loadTodo = async () => {
-    const todos = await storage.load({ key: "todoslist", defaultValue: [] });
-    const c = todos.find((t) => t.id === id);
-
-    if (c) {
-      setCurrentTodo(c);
-    }
-  };
+  const todoToEdit = useTodosStore((state) =>
+    state.todos.find((t) => t.id === id),
+  );
+  const updateTodoFromStore = useTodosStore((state) => state.updateTodo);
 
   const handleEditTodo = async (newLabel) => {
-    const updatedTodo = { ...currentTodo, label: newLabel };
-    const todos = await storage.load({ key: "todoslist", defaultValue: [] });
-    const updatedTodos = todos.map((t) => (t.id === id ? updatedTodo : t));
-    storage.save({ key: "todoslist", data: updatedTodos });
+    if (id) {
+      updateTodoFromStore(id, newLabel);
+    }
     navigation.goBack();
   };
   useEffect(() => {
@@ -34,7 +29,7 @@ function EditTodoScreen({ route, navigation }) {
   return (
     <TodoForm
       submitLabel="Éditer la tâche"
-      initialValue={currentTodo.label}
+      initialValue={todoToEdit?.label || ""}
       onSubmit={handleEditTodo}
     />
   );

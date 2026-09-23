@@ -8,38 +8,26 @@ import {
   Alert,
 } from "react-native";
 import { FAB } from "@rneui/themed";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useMemo } from "react";
 import storage from "../lib/storage";
 import Item from "../components/Item";
 import { useLoading } from "../contexts/LoaderContext";
 import Loader from "../components/Loader";
+import { useSettings } from "../contexts/SettingsContext";
+import { useTodosStore } from "../store/todoStore";
 function TodoListScreen({ navigation }) {
-  // const navigation = useNavigation();
-  const { loading, setLoading } = useLoading();
+  const { preferences } = useSettings();
 
-  const [todos, setTodos] = useState([]);
+  const todosFromStore = useTodosStore((state) => state.todos);
+  const addTodoFromStore = useTodosStore((state) => state.addTodo);
+  const clearFromStore = useTodosStore((state) => state.clearTodos);
+  const removeTodoFromStore = useTodosStore((state) => state.removeTodo);
+  const toggleTodoFromStore = useTodosStore((state) => state.toggleTodo);
+  const hasHydrated = useTodosStore((state) => state.hasHydrated);
+
+  // addTodoFromStore("ma tache depuis le store");
   const handleCreateTodo = () => {
     navigation.navigate("CreateTodo");
-  };
-
-  const fetchTodos = async () => {
-    setLoading(true);
-    const todos = await storage.load({ key: "todoslist", defaultValue: [] });
-    setTodos(todos);
-    // setTimeout(() => {
-    // simulation d'un temps long pour récupérer le loader
-    setLoading(false);
-    // }, 2000);
-  };
-
-  const deleteTodo = async (id) => {
-    setLoading(true);
-    const updatedTodos = await storage.removeTodo(id);
-    if (updatedTodos) {
-      setTodos(updatedTodos);
-    }
-    setLoading(false);
   };
   const handleDelete = (id) => {
     Alert.alert(
@@ -50,32 +38,34 @@ function TodoListScreen({ navigation }) {
         {
           text: "Supprimer",
           style: "destructive",
-          onPress: () => deleteTodo(id),
+          onPress: () => removeTodoFromStore(id),
         },
       ],
     );
   };
 
-  const handleToggleTodo = async (id) => {
-    const updatedTodos = await storage.toggleTodo(id);
-    if (updatedTodos) {
-      setTodos(updatedTodos);
-    }
+  const handleToggleTodo = (id) => {
+    toggleTodoFromStore(id);
   };
-  useFocusEffect(
-    useCallback(() => {
-      fetchTodos();
-    }, []),
-  );
+
+  const filteredTodos = useMemo(() => {
+    return todosFromStore.filter((todo) => {
+      if (!preferences?.showTodoDone && todo.done) {
+        return false; // Si showTodoDone est false ET que la todo est terminée, on la masque
+      }
+      return true; // Sinon on l'affiche
+    });
+  }, [todosFromStore, preferences?.showTodoDone]); // ici le tableau de dépendance de useMemo dit : "seulement si todos OU preferences.showTodoDone changent, on recalcule le tableau (autrement dit on refait le filter)"
+
   return (
     <View style={styles.container}>
-      {loading ? (
+      {!hasHydrated ? (
         <Loader />
       ) : (
         <FlatList
           keyExtractor={(todo) => todo.id}
           style={{ alignSelf: "stretch" }}
-          data={todos}
+          data={filteredTodos}
           renderItem={({ item }) => (
             <Item
               todo={item}
@@ -83,10 +73,6 @@ function TodoListScreen({ navigation }) {
               onToggle={handleToggleTodo}
             />
           )}
-          onRefresh={fetchTodos}
-          refreshing={loading}
-          // ListEmptyComponent={<View><Text>Il n'y a pas de todos</Text></View>}
-          // ListFooterComponent={isFetchingNextPage ? <ActivityIndicator /> : null}
         />
       )}
       <FAB

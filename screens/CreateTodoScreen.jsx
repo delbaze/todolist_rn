@@ -1,12 +1,11 @@
 import storage from "../lib/storage";
 import TodoForm from "../components/TodoForm";
+import { useTodosStore } from "../store/todoStore";
 
 function CreateTodoScreen({ navigation }) {
+  const addTodoFromStore = useTodosStore((state) => state.addTodo);
   const handleAddTodo = async (label) => {
-    const newTodo = { id: Date.now().toString(), label, done: false };
-    const todos = await storage.load({ key: "todoslist", defaultValue: [] });
-    const updatedTodos = [...todos, newTodo];
-    storage.save({ key: "todoslist", data: updatedTodos });
+    addTodoFromStore(label);
     navigation.goBack();
   };
   return <TodoForm submitLabel="Ajouter la tâche" onSubmit={handleAddTodo} />;

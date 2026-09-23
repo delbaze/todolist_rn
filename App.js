@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Reactotron from 'reactotron-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoaderProvider from './contexts/LoaderContext';
+import SettingsProvider from './contexts/SettingsContext';
 
 Reactotron
   .setAsyncStorageHandler(AsyncStorage)
@@ -16,10 +17,12 @@ Reactotron
 export default function App() {
   return ( 
     <SafeAreaProvider>
-      <LoaderProvider>
-        <MainNavigator />
-        <StatusBar style="auto" />
-      </LoaderProvider>
+      <SettingsProvider>
+        <LoaderProvider>
+          <MainNavigator />
+          <StatusBar style="auto" />
+        </LoaderProvider>
+      </SettingsProvider>
     </SafeAreaProvider>
   );
 }
