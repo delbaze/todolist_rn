@@ -7,6 +7,11 @@ import Reactotron from 'reactotron-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoaderProvider from './contexts/LoaderContext';
 import SettingsProvider from './contexts/SettingsContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import LoginScreen from './screens/LoginScreen';
+import { useState } from 'react';
+import Loader from './components/Loader';
+import { useAuthStore } from './store/authStore';
 
 Reactotron
   .setAsyncStorageHandler(AsyncStorage)
@@ -14,15 +19,28 @@ Reactotron
   .useReactNative()
   .connect();
 
+
+const queryClient = new QueryClient();
+
 export default function App() {
+
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const hasHydrated = useAuthStore((state) => state.hasHydrated);
+
+  if (!hasHydrated){
+    return <Loader />
+  }
   return ( 
     <SafeAreaProvider>
-      <SettingsProvider>
-        <LoaderProvider>
-          <MainNavigator />
-          <StatusBar style="auto" />
-        </LoaderProvider>
-      </SettingsProvider>
+      <QueryClientProvider client={queryClient}>
+        <SettingsProvider>
+          <LoaderProvider>
+            {isAuthenticated ? <MainNavigator /> : <LoginScreen />}
+            <StatusBar style="auto" />
+          </LoaderProvider>
+        </SettingsProvider>
+      </QueryClientProvider>
     </SafeAreaProvider>
   );
 }

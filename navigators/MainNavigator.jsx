@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Image, StyleSheet } from "react-native";
 import ProfileScreen from "../screens/ProfileScreen";
 import IonIcons from "@react-native-vector-icons/ionicons";
+import UsersListScreen from "../screens/UsersListScreen";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -12,7 +13,11 @@ function MainNavigator() {
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
       <NavigationContainer>
-        <Tab.Navigator initialRouteName="Todos" tabBarPosition="bottom">
+        <Tab.Navigator
+          initialRouteName="Todos"
+          tabBarPosition="bottom"
+          screenOptions={{ lazy: true }}
+        >
           <Tab.Screen
             name="Todos"
             component={TodosNavigator}
@@ -22,6 +27,20 @@ function MainNavigator() {
                 // <Image source={require('./favicon.png')} width={10} height={10}/>
                 <IonIcons
                   name="list-sharp"
+                  size={24}
+                  color={focused ? "orange" : "black"}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="UsersList"
+            component={UsersListScreen}
+            options={{
+              tabBarLabel: "Users",
+              tabBarIcon: ({ focused }) => (
+                <IonIcons
+                  name="people-sharp"
                   size={24}
                   color={focused ? "orange" : "black"}
                 />

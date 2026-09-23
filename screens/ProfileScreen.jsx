@@ -1,13 +1,15 @@
 import { Alert, StyleSheet, Text, View } from "react-native";
-import { Avatar, ListItem, Icon, Switch } from "@rneui/themed";
+import { Avatar, ListItem, Icon, Switch, Button } from "@rneui/themed";
 import { useSettings } from "../contexts/SettingsContext";
 import storage from "../lib/storage";
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
+import { useAuthStore } from "../store/authStore";
 
 function ProfileScreen() {
   const { preferences, setPreferences } = useSettings();
-
+  const logout = useAuthStore((state) => state.logout);
+  
   const handleChangeShowDone = async (value) => {
     await storage.save({
       key: "preferences",
@@ -32,7 +34,6 @@ function ProfileScreen() {
       aspect: [4, 4],
       quality: 1,
     });
-
 
     if (!result.canceled) {
       await storage.save({
@@ -84,6 +85,7 @@ function ProfileScreen() {
           </ListItem.Content>
         </ListItem>
       </View>
+      <Button title="Se déconnecter" onPress={logout} />
     </View>
   );
 }
