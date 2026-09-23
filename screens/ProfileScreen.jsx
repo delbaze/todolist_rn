@@ -35,7 +35,6 @@ function ProfileScreen() {
 
 
     if (!result.canceled) {
-      console.log("je change l'image");
       await storage.save({
         key: "preferences",
         data: { ...preferences, imageFile: result.assets[0].uri },

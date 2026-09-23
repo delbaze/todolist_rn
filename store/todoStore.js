@@ -37,7 +37,7 @@ export const useTodosStore = create(
     {
       name: "todos-storage",
       storage: createJSONStorage(() => AsyncStorage),
-      partialize: (state) => ({ todos: state.todos }), // partialize reçoit l'état complet et retourne le sous ensemble à sauvegarder dans le storage, ici je ne garde que todos, hasHydrated n'est jamais écrit dans AsyncStorage
+      partialize: (state) => ({ todos: state.todos}), // partialize reçoit l'état complet et retourne le sous ensemble à sauvegarder dans le storage, ici je ne garde que todos, hasHydrated n'est jamais écrit dans AsyncStorage
 
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);

@@ -25,7 +25,6 @@ function TodoListScreen({ navigation }) {
   const toggleTodoFromStore = useTodosStore((state) => state.toggleTodo);
   const hasHydrated = useTodosStore((state) => state.hasHydrated);
 
-  // addTodoFromStore("ma tache depuis le store");
   const handleCreateTodo = () => {
     navigation.navigate("CreateTodo");
   };
